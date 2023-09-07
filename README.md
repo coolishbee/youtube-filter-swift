@@ -5,8 +5,9 @@
 - [x] Youtube API 연동
 - [x] RealmSwift
 - [x] Dark Mode 지원
-- [x] 검색 기능 제공
 - [ ] Unit Test
+- [ ] Video Player
+- [ ] Chromecast 연동
 
 ## Dependencies
 
