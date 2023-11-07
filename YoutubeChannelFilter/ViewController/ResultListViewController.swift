@@ -12,10 +12,6 @@ class ResultListViewController: UIViewController {
     private var videoArray = [VideoData]()
     private var searchWord : String = ""
     
-    //private let backBtnImageView = UIImageView()
-    //private let searchView = SearchView()
-    //private let resultTableView = UITableView()
-    
     lazy var backBtnImageView: UIImageView = {
         let view = UIImageView()
         view.image = UIImage(systemName: "arrow.backward")
@@ -42,9 +38,6 @@ class ResultListViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
 
-        //setBackBtnImageView()
-        //setSearchBar()
-        //setResultTableView()
         setupView()
         API.getYoutubeList(searchWord: searchWord) { result, error in
             guard let result = result else {
@@ -108,49 +101,6 @@ class ResultListViewController: UIViewController {
         self.present(vc, animated: false)
     }
     
-//    private func setBackBtnImageView() {
-//        backBtnImageView.image = UIImage(systemName: "arrow.backward")
-//        backBtnImageView.tintColor = .darkGray
-//        backBtnImageView.isUserInteractionEnabled = true
-//        let gesture = UITapGestureRecognizer(target: self, action: #selector(backVC(_:)))
-//        backBtnImageView.addGestureRecognizer(gesture)
-//        view.addSubview(backBtnImageView)
-//        backBtnImageView.snp.makeConstraints { imageView in
-//            imageView.top.equalTo(view.safeAreaLayoutGuide).inset(15)
-//            imageView.leading.equalTo(view.safeAreaLayoutGuide).inset(10)
-//            imageView.width.height.equalTo(30)
-//        }
-//    }
-    
-//    private func setSearchBar() {
-//        searchView.translatesAutoresizingMaskIntoConstraints = false
-//        searchView.addTarget(self, action: #selector(pushSearchView), for: .touchUpInside)
-//        view.addSubview(searchView)
-//        searchView.snp.makeConstraints { (make) in
-//            make.leading.equalTo(backBtnImageView.snp.trailing).offset(8)
-//            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-8)
-//        }
-//
-//        backBtnImageView.snp.makeConstraints { imageView in
-//            imageView.centerY.equalTo(searchView.snp.centerY)
-//        }
-//        searchView.configure(word: searchWord)
-//    }
-    
-//    private func setResultTableView() {
-//        resultTableView.delegate = self
-//        resultTableView.dataSource = self
-//        view.addSubview(resultTableView)
-//        resultTableView.snp.makeConstraints { tableView in
-//            tableView.top.equalTo(searchView.snp.bottom).offset(10)
-//            tableView.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-//            tableView.bottom.equalTo(view.safeAreaLayoutGuide)
-//        }
-//
-//        getTempAPI(query: self.searchWord, completion: { data in
-//            self.tempUpdateData(newVids: data)
-//        })
-//    }
 }
 
 extension ResultListViewController: UITableViewDataSource {

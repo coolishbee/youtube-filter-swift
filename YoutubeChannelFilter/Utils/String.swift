@@ -35,11 +35,7 @@ extension String
         return self
     }
     
-    func uploadDate() -> String {
-//        let indexT = self.firstIndex(of: "T")
-//        let shortDate = String(self[...self.index(before: indexT!)])
-//        return "Uploaded on: "+shortDate
-        
+    func uploadDate() -> String {        
         if let indexT = self.firstIndex(of: "T") {
             return "Uploaded on: " + String(self[...index(before: indexT)])
         }

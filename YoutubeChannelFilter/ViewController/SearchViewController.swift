@@ -17,13 +17,8 @@ protocol SearchWordDelegate: AnyObject {
 
 final class SearchViewController: UIViewController {
     private var records = [SearchRecord]()
-    //private let backBtnImageView = UIImageView()
-    //private let searchBar = UISearchBar()
-    //private let searchRecordTableView = UITableView()
-    weak var searchWordDelegate: SearchWordDelegate?
-    
     private var disposeBag = DisposeBag()
-    
+    weak var searchWordDelegate: SearchWordDelegate?
     
     lazy var backBtnImageView: UIImageView = {
         let view = UIImageView()
@@ -56,11 +51,6 @@ final class SearchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //setBackBtnImageView()
-        //setSearchBar()
-        //setSearchRecordTableView()
-        //addTapGesture()
         
         setupView()
         bindRx()
@@ -135,79 +125,12 @@ final class SearchViewController: UIViewController {
     @objc private func popView(_ sender: UITapGestureRecognizer) {
         self.dismiss(animated: false)
     }
-    
-//    private func setBackBtnImageView() {
-//        backBtnImageView.image = UIImage(systemName: "arrow.backward")
-//        backBtnImageView.tintColor = .darkGray
-//        backBtnImageView.isUserInteractionEnabled = true
-//        let gesture = UITapGestureRecognizer(target: self, action: #selector(popView(_:)))
-//        backBtnImageView.addGestureRecognizer(gesture)
-//        view.addSubview(backBtnImageView)
-//        backBtnImageView.snp.makeConstraints { imageView in
-//            imageView.leading.equalTo(view.safeAreaLayoutGuide).inset(10)
-//            imageView.width.height.equalTo(30)
-//        }
-//    }
-    
-//    private func setSearchBar() {
-//        searchBar.placeholder = "YouTube 검색"
-//        searchBar.delegate = self
-//        //searchBar.barTintColor = Color.veryLightGrey
-//        searchBar.setBackgroundImage(UIImage(), for: .any, barMetrics: .default)
-//        searchBar.becomeFirstResponder()
-//        view.addSubview(searchBar)
-//        searchBar.snp.makeConstraints { searchBar in
-//            searchBar.leading.equalTo(backBtnImageView.snp.trailing)
-//            searchBar.top.trailing.equalTo(view.safeAreaLayoutGuide)
-//        }
-//
-//        backBtnImageView.snp.makeConstraints { imageView in
-//            imageView.centerY.equalTo(searchBar.snp.centerY)
-//        }
-//    }
-    
-//    private func setSearchRecordTableView() {
-//        searchRecordTableView.register(SearchRecordCell.self,
-//                                       forCellReuseIdentifier: SearchRecordCell.reuseIdentifier)
-//        searchRecordTableView.register(UITableViewHeaderFooterView.self,
-//                                       forHeaderFooterViewReuseIdentifier: "searchRecordTableHeaderView")
-//        searchRecordTableView.dataSource = self
-//        searchRecordTableView.delegate = self
-//        searchRecordTableView.keyboardDismissMode = .onDrag
-//        searchRecordTableView.backgroundColor = .systemBackground
-//
-//        view.addSubview(searchRecordTableView)
-//        searchRecordTableView.snp.makeConstraints { tableView in
-//            tableView.top.equalTo(searchBar.snp.bottom)
-//            tableView.leading.trailing.bottom.equalTo(view)
-//        }
-//    }
-    
-    //    private func addTapGesture() {
-    //        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard(_:)))
-    //        view.addGestureRecognizer(tapGesture)
-    //    }
-    //
-    //    @objc
-    //    private func hideKeyboard(_ sender: Any) {
-    //        view.endEditing(true)
-    //    }
 }
 
 extension SearchViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar)
     {
-        //        let result = try! Realm().objects(SearchRecord.self)
-        //            .filter {
-        //                return $0.title == self.searchBar.text
-        //            }
-        
-        //        let record = records.filter {
-        //            return $0.title == self.searchBar.text
-        //        }
-        //        print("search record!! ", record.first?.title ?? "empty")
-        
         if let update = try! Realm().objects(SearchRecord.self)
             .filter(NSPredicate(format: "title = %@", self.searchBar.text ?? ""))
             .first{ try! Realm().write{
@@ -228,7 +151,6 @@ extension SearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int
     {
-        //return try! Realm().objects(SearchRecord.self).count
         return records.count
     }
 
@@ -263,8 +185,6 @@ extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath)
     {
-//        guard let cell = searchRecordTableView.cellForRow(at: indexPath) as? SearchRecordTableViewCell,
-//              let searchText = cell.titleLabel.text else { return }
         let searchText = records[indexPath.row].title ?? "empty"
         let record = records[indexPath.row]
         try! Realm().write{
@@ -280,8 +200,7 @@ extension SearchViewController: UITableViewDelegate {
     {
         guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "searchRecordTableHeaderView")
         else { return UIView() }
-        headerView.backgroundView = UIView(frame: headerView.bounds)
-        //headerView.backgroundView?.backgroundColor = .systemBackground
+        headerView.backgroundView = UIView(frame: headerView.bounds)        
         
         if #available(iOS 14.0, *) {
             var content = headerView.defaultContentConfiguration()

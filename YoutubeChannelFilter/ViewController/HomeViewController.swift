@@ -13,10 +13,6 @@ import SnapKit
 class HomeViewController: UIViewController {
     private var videoArray = [VideoData]()
     
-    //private let videoTableView = UITableView()
-    //private let logImageView = UIImageView()
-    //private let searchButton = UIButton()
-    
     lazy var videoTableView: UITableView = {
         let tableView = UITableView()
         tableView.dataSource = self
@@ -121,16 +117,6 @@ class HomeViewController: UIViewController {
             }
         }
     }
-    
-//    func refreshTableData(newVids: [VideoData])
-//    {
-//        self.videoArray = newVids
-//        self.videoTableView.reloadData()
-//        let indexPath = IndexPath(row: NSNotFound, section: 0)
-//        self.videoTableView.scrollToRow(at: indexPath as IndexPath,
-//                                        at: .top,
-//                                        animated: false)
-//    }
 }
 
 extension HomeViewController: UITableViewDataSource {

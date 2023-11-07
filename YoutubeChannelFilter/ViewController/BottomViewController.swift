@@ -105,11 +105,6 @@ class BottomViewController: UIViewController {
             make.leading.equalTo(view.snp.leading)
             make.trailing.equalTo(view.snp.trailing)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-//            if #available(iOS 11.0, *) {
-//                make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-//            } else {
-//                make.bottom.equalTo(view.snp.bottom)
-//            }
         }
         safeView.snp.makeConstraints { (make) in
             make.top.leading.trailing.equalTo(contentView)

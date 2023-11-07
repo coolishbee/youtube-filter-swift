@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        let config = APIConfiguration(apiKey: "")
+        let config = APIConfiguration(apiKey: "AIzaSyAQyLxX7ZxjnURAvRY-HgYsrIcrFuHqWKE")
         APIConfiguration._shared = config
         
 //        let tabBarController = UITabBarController()
