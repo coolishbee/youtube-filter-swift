@@ -5,7 +5,7 @@
 //  Created by coolishbee on 2023/07/24.
 //
 
-import Foundation
+import UIKit
 
 extension String
 {
@@ -50,5 +50,14 @@ extension String
     func decodeUrl() -> String?
     {
         return self.removingPercentEncoding
+    }
+    
+    func generateImage(pointSize: CGFloat = 30) -> UIImage {
+        let config = UIImage.SymbolConfiguration(pointSize: pointSize,
+                                                 weight: .regular,
+                                                 scale: .medium)
+        let image = UIImage(systemName: self,
+                            withConfiguration: config)?.withRenderingMode(.alwaysTemplate)
+        return image ?? UIImage()
     }
 }

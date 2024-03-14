@@ -3,10 +3,9 @@ platform :ios, '13.0'
 use_frameworks!
 
 target 'YoutubeChannelFilter' do
-	pod 'Alamofire'
-	pod 'RealmSwift'
-	pod 'SDWebImage'
-  pod 'SnapKit'
-  pod 'RxSwift'
-  pod 'RxCocoa'
+	
+  
+  
+  
+  pod 'MaterialComponents/ActivityIndicator'
 end

@@ -5,6 +5,7 @@
 //  Created by coolishbee on 2023/08/02.
 //
 
+import Foundation
 import Alamofire
 
 class APIEventLogger: EventMonitor {

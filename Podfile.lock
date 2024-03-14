@@ -1,50 +1,32 @@
 PODS:
-  - Alamofire (5.6.4)
-  - Realm (10.34.0):
-    - Realm/Headers (= 10.34.0)
-  - Realm/Headers (10.34.0)
-  - RealmSwift (10.34.0):
-    - Realm (= 10.34.0)
-  - RxCocoa (6.5.0):
-    - RxRelay (= 6.5.0)
-    - RxSwift (= 6.5.0)
-  - RxRelay (6.5.0):
-    - RxSwift (= 6.5.0)
-  - RxSwift (6.5.0)
-  - SDWebImage (5.15.0):
-    - SDWebImage/Core (= 5.15.0)
-  - SDWebImage/Core (5.15.0)
-  - SnapKit (5.6.0)
+  - MaterialComponents/ActivityIndicator (124.2.0):
+    - MaterialComponents/Palettes
+    - MaterialComponents/private/Application
+    - MDFInternationalization
+    - MotionAnimator (~> 4.0)
+  - MaterialComponents/Palettes (124.2.0)
+  - MaterialComponents/private/Application (124.2.0)
+  - MDFInternationalization (3.0.0)
+  - MotionAnimator (4.0.1):
+    - MotionInterchange (~> 3.0)
+  - MotionInterchange (3.0.0)
 
 DEPENDENCIES:
-  - Alamofire
-  - RealmSwift
-  - RxCocoa
-  - RxSwift
-  - SDWebImage
-  - SnapKit
+  - MaterialComponents/ActivityIndicator
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
-    - Alamofire
-    - Realm
-    - RealmSwift
-    - RxCocoa
-    - RxRelay
-    - RxSwift
-    - SDWebImage
-    - SnapKit
+    - MaterialComponents
+    - MDFInternationalization
+    - MotionAnimator
+    - MotionInterchange
 
 SPEC CHECKSUMS:
-  Alamofire: 4e95d97098eacb88856099c4fc79b526a299e48c
-  Realm: 991e7c4d6d37f1d6470a48bb072782ef00b91b67
-  RealmSwift: 11e77934e4af6d011d2970645fe56e11fa0e3c2c
-  RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
-  RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
-  RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
-  SDWebImage: 9bec4c5cdd9579e1f57104735ee0c37df274d593
-  SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
+  MaterialComponents: 1a9b2d9d45b1601ae544de85089adc4c464306d4
+  MDFInternationalization: d697c55307816222a55685c4ccb1044ffb030c12
+  MotionAnimator: 5f99d7c9592928c0f28a66283eda9c3b657dc480
+  MotionInterchange: 13adae439b377e31d1674cc165539d50e1d1566a
 
-PODFILE CHECKSUM: b0859bf79b7a0a92f48180c214c0e2ca27f1ea20
+PODFILE CHECKSUM: 4f845e0b282b057d960c3fa1a68845ce15d6e1e4
 
 COCOAPODS: 1.12.0

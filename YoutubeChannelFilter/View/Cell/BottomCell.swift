@@ -18,20 +18,17 @@ class BottomCell: UITableViewCell {
     
     lazy var baseView: UIView = {
         let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
     lazy var iconImage: UIImageView = {
         let view = UIImageView()
-        view.translatesAutoresizingMaskIntoConstraints = false
         view.contentMode = .center
         return view
     }()
     
     lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -46,9 +43,7 @@ class BottomCell: UITableViewCell {
     }
     
     private func setupView() {
-        //let backgroundView = UIView()
-        //backgroundView.backgroundColor = Color.veryLightGrey
-        //self.selectedBackgroundView = backgroundView
+        
         self.addSubview(baseView)
         baseView.addSubview(iconImage)
         baseView.addSubview(titleLabel)
@@ -57,15 +52,6 @@ class BottomCell: UITableViewCell {
             make.top.equalTo(self.safeAreaLayoutGuide.snp.top)
             make.leading.equalTo(self.safeAreaLayoutGuide).offset(Design.margin)
             make.trailing.equalTo(self.safeAreaLayoutGuide).offset(-Design.margin)
-//            if #available(iOS 11.0, *) {
-//                make.top.equalTo(self.safeAreaLayoutGuide.snp.top)
-//                make.leading.equalTo(self.safeAreaLayoutGuide).offset(Design.margin)
-//                make.trailing.equalTo(self.safeAreaLayoutGuide).offset(-Design.margin)
-//            } else {
-//                make.top.equalTo(self.snp.top)
-//                make.leading.equalTo(self).offset(Design.margin)
-//                make.trailing.equalTo(self).offset(-Design.margin)
-//            }
             make.bottom.equalTo(self)
         }
         

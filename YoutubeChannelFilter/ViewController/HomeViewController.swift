@@ -11,18 +11,21 @@ import SDWebImage
 import SnapKit
 
 class HomeViewController: UIViewController {
-    private var videoArray = [VideoData]()
+    private var videoArray = [VideoData]()    
     
     lazy var videoTableView: UITableView = {
         let tableView = UITableView()
         tableView.dataSource = self
         tableView.delegate = self
+        let longPress = UILongPressGestureRecognizer(target: self,
+                                                     action: #selector(handleLongPress))
+        tableView.addGestureRecognizer(longPress)
         return tableView
     }()
     
-    lazy var logImageView: UIImageView = {
+    private let logImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "Logo")
+        view.image = UIImage(named: "youtubeLogo")
         view.contentMode = .scaleAspectFit
         return view
     }()
@@ -30,7 +33,7 @@ class HomeViewController: UIViewController {
     lazy var searchButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
+        //button.translatesAutoresizingMaskIntoConstraints = false
         button.contentMode = .scaleAspectFill
         button.addTarget(self, action: #selector(searchViewBtn(_:)), for: .touchUpInside)
         return button
@@ -41,7 +44,7 @@ class HomeViewController: UIViewController {
         
         setupView()
         
-        API.getYoutubeList(searchWord: "SwiftUI") { result, error in
+        API.getYoutubeList(searchWord: "황주호 김지현") { result, error in
             guard let result = result else {
                 print("Error! \(String(describing: error))")
                 return
@@ -78,10 +81,6 @@ class HomeViewController: UIViewController {
             tableView.top.equalTo(logImageView.snp.bottom).offset(10)
             tableView.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
-        
-        let longPress = UILongPressGestureRecognizer(target: self,
-                                                     action: #selector(handleLongPress))
-        videoTableView.addGestureRecognizer(longPress)
     }
     
     @objc func searchViewBtn(_ sender: UIButton) {
@@ -178,6 +177,8 @@ extension HomeViewController: UITableViewDelegate {
         let index = indexPath.row
         //print("User Selected: ", String(index))
         print(self.videoArray[index].identifier ?? "id is empty")
+                        
+        NotificationCenter.default.post(name: .openVideoPlayer, object: self.videoArray[index])
         
 //        if #available(iOS 15.0, *) {
 //            if let sheet = bottomVC.sheetPresentationController {
@@ -194,7 +195,7 @@ extension HomeViewController: UITableViewDelegate {
 }
 
 extension HomeViewController: SearchWordDelegate {
-    func sendQuery(query: String) {
+    func sendQuery(query: String) {        
         let resultListVC = ResultListViewController(word: query)
         self.navigationController?.pushViewController(resultListVC, animated: true)
     }

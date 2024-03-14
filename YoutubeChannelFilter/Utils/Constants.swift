@@ -15,6 +15,7 @@ struct Constants {
         static let baseURL = ""
     }
     
+    static let javascriptYoutubeUrlEvaluator = "document.getElementsByTagName('video')[0].src"
 }
 
 enum HTTPHeaderField: String {
@@ -25,3 +26,10 @@ enum HTTPHeaderField: String {
 enum ContentType: String {
     case json = "application/json"
 }
+
+enum VideoPlayerMode: Int {
+    case expand, minimize
+}
+
+let MINI_PLAYER_HEIGHT: CGFloat = 60
+let MINI_PLAYER_WIDTH: CGFloat = UIScreen.main.bounds.width / 3 + 10

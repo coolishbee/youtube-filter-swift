@@ -12,7 +12,7 @@ class SearchView: UIButton {
     lazy var searchImageView: UIImageView = {
         let view = UIImageView()
         view.isUserInteractionEnabled = false
-        view.translatesAutoresizingMaskIntoConstraints = false
+        //view.translatesAutoresizingMaskIntoConstraints = false
         view.contentMode = .scaleAspectFit
         view.image = UIImage(named: "xmark")?.withRenderingMode(.alwaysTemplate)
         view.tintColor = Color.black
@@ -22,7 +22,7 @@ class SearchView: UIButton {
     lazy var textField: UITextField = {
         let text = UITextField()
         text.isUserInteractionEnabled = false
-        text.translatesAutoresizingMaskIntoConstraints = false
+        //text.translatesAutoresizingMaskIntoConstraints = false
         //text.font = .r16
         text.attributedPlaceholder = NSAttributedString(
             string: "YouTube 검색",
@@ -38,7 +38,7 @@ class SearchView: UIButton {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        initView()
+        setupView()
         self.backgroundColor = Color.system
         self.layer.cornerRadius = 8
     }
@@ -47,19 +47,19 @@ class SearchView: UIButton {
         fatalError("init error!!!")
     }
     
-    func initView() {
+    func setupView() {
         self.addSubview(searchImageView)
         self.addSubview(textField)
         
-        searchImageView.snp.makeConstraints { imgView in
-            imgView.leading.equalToSuperview().offset(8)
-            imgView.centerY.equalToSuperview()
-            imgView.width.height.equalTo(20)
+        searchImageView.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(8)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(20)
         }
-        textField.snp.makeConstraints { txtField in
-            txtField.top.bottom.equalToSuperview()
-            txtField.trailing.equalToSuperview()
-            txtField.leading.equalTo(searchImageView.snp.trailing).offset(8)
+        textField.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.leading.equalTo(searchImageView.snp.trailing).offset(8)
         }
     }
 }

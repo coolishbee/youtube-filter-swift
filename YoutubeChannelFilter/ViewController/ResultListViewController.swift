@@ -10,7 +10,7 @@ import UIKit
 class ResultListViewController: UIViewController {
     
     private var videoArray = [VideoData]()
-    private var searchWord : String = ""
+    private var searchWord : String = ""    
     
     lazy var backBtnImageView: UIImageView = {
         let view = UIImageView()
@@ -21,8 +21,7 @@ class ResultListViewController: UIViewController {
     }()
     
     lazy var searchView: SearchView = {
-        let view = SearchView()
-        view.translatesAutoresizingMaskIntoConstraints = false
+        let view = SearchView()        
         view.addTarget(self, action: #selector(pushSearchView), for: .touchUpInside)
         return view
     }()
@@ -63,10 +62,10 @@ class ResultListViewController: UIViewController {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(backVC(_:)))
         backBtnImageView.addGestureRecognizer(gesture)
         view.addSubview(backBtnImageView)
-        backBtnImageView.snp.makeConstraints { imageView in
-            imageView.top.equalTo(view.safeAreaLayoutGuide).inset(15)
-            imageView.leading.equalTo(view.safeAreaLayoutGuide).inset(10)
-            imageView.width.height.equalTo(30)
+        backBtnImageView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).inset(15)
+            make.leading.equalTo(view.safeAreaLayoutGuide).inset(10)
+            make.width.height.equalTo(30)
         }
         
         //search bar
@@ -76,17 +75,17 @@ class ResultListViewController: UIViewController {
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-8)
         }
         
-        backBtnImageView.snp.makeConstraints { imageView in
-            imageView.centerY.equalTo(searchView.snp.centerY)
+        backBtnImageView.snp.makeConstraints { make in
+            make.centerY.equalTo(searchView.snp.centerY)
         }
         searchView.configure(word: searchWord)
         
         //table view
         view.addSubview(resultTableView)
-        resultTableView.snp.makeConstraints { tableView in
-            tableView.top.equalTo(searchView.snp.bottom).offset(10)
-            tableView.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            tableView.bottom.equalTo(view.safeAreaLayoutGuide)
+        resultTableView.snp.makeConstraints { make in
+            make.top.equalTo(searchView.snp.bottom).offset(10)
+            make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }        
     
@@ -131,13 +130,25 @@ extension ResultListViewController: UITableViewDataSource {
 extension ResultListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
+        let index = indexPath.row
+        print(self.videoArray[index].identifier ?? "id is empty")
         
+        NotificationCenter.default.post(name: .openVideoPlayer, object: self.videoArray[index])
+        
+//        switch(indexPath.row){
+//        case 0:
+//            print("case 0")
+//        case 1:
+//            print("case 1")
+//        default:
+//            print("default")
+//        }
     }
 }
 
 extension ResultListViewController: SearchWordDelegate {
     func sendQuery(query: String) {
-        let testVC = ResultListViewController(word: query)
-        self.navigationController?.pushViewController(testVC, animated: true)
+        let resultListVC = ResultListViewController(word: query)
+        self.navigationController?.pushViewController(resultListVC, animated: true)
     }
 }

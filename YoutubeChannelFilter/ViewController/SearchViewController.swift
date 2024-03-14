@@ -8,8 +8,10 @@
 import UIKit
 import SnapKit
 import RealmSwift
-import RxSwift
-import RxCocoa
+//import RxSwift
+//import RxCocoa
+import Combine
+import CombineCocoa
 
 protocol SearchWordDelegate: AnyObject {
     func sendQuery(query: String)
@@ -17,7 +19,8 @@ protocol SearchWordDelegate: AnyObject {
 
 final class SearchViewController: UIViewController {
     private var records = [SearchRecord]()
-    private var disposeBag = DisposeBag()
+    //private var disposeBag = DisposeBag()
+    private var subscriptions = Set<AnyCancellable>()
     weak var searchWordDelegate: SearchWordDelegate?
     
     lazy var backBtnImageView: UIImageView = {
@@ -25,13 +28,14 @@ final class SearchViewController: UIViewController {
         view.image = UIImage(systemName: "arrow.backward")
         view.tintColor = .darkGray
         view.isUserInteractionEnabled = true
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(popView(_:))))
         return view
     }()
     
     lazy var searchBar: UISearchBar = {
         let bar = UISearchBar()
         bar.placeholder = "YouTube 검색"
-        bar.delegate = self
+        //bar.delegate = self
         bar.setBackgroundImage(UIImage(), for: .any, barMetrics: .default)
         bar.becomeFirstResponder()
         return bar
@@ -54,7 +58,6 @@ final class SearchViewController: UIViewController {
         
         setupView()
         bindRx()
-        
         fetchRecords()
         searchRecordTableView.reloadData()
     }
@@ -65,16 +68,15 @@ final class SearchViewController: UIViewController {
     
     private func setupView() {        
         view.backgroundColor = .systemBackground
-        
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(popView(_:)))
-        backBtnImageView.addGestureRecognizer(gesture)
         view.addSubview(backBtnImageView)
+        view.addSubview(searchBar)
+        view.addSubview(searchRecordTableView)
+        
         backBtnImageView.snp.makeConstraints { imageView in
             imageView.leading.equalTo(view.safeAreaLayoutGuide).inset(10)
             imageView.width.height.equalTo(30)
         }
         
-        view.addSubview(searchBar)
         searchBar.snp.makeConstraints { searchBar in
             searchBar.leading.equalTo(backBtnImageView.snp.trailing)
             searchBar.top.trailing.equalTo(view.safeAreaLayoutGuide)
@@ -84,7 +86,6 @@ final class SearchViewController: UIViewController {
             imageView.centerY.equalTo(searchBar.snp.centerY)
         }
         
-        view.addSubview(searchRecordTableView)
         searchRecordTableView.snp.makeConstraints { tableView in
             tableView.top.equalTo(searchBar.snp.bottom)
             tableView.leading.trailing.bottom.equalTo(view)
@@ -92,30 +93,65 @@ final class SearchViewController: UIViewController {
     }
     
     private func bindRx() {
-        searchBar.rx.text
-            .orEmpty
-            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
-            .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] (str) in
-                guard let self = self else {
-                    return
-                }
-                if(str.isEmpty) {
-                    print("str is empty")
+//        searchBar.rx.text
+//            .orEmpty
+//            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
+//            .distinctUntilChanged()
+//            .subscribe(onNext: { [weak self] (str) in
+//                guard let self = self else {
+//                    return
+//                }
+//                if(str.isEmpty) {
+//                    print("str is empty")
+//                    self.fetchRecords()
+//                }else{
+//                    print(str)
+//                    let word = str.trimmingCharacters(in: .whitespaces)
+//                    
+//                    self.records = Array(try! Realm()
+//                        .objects(SearchRecord.self)
+//                        .filter(NSPredicate(format: "title CONTAINS %@", word))
+//                        //.filter("title CONTAINS[cd] %@", str)
+//                        .sorted(byKeyPath: "date", ascending: false))
+//                }
+//                
+//                self.searchRecordTableView.reloadData()
+//            }).disposed(by: disposeBag)
+        
+        searchBar.textDidChangePublisher
+            .sink(receiveValue: {
+                if ($0.isEmpty) {
                     self.fetchRecords()
                 }else{
-                    print(str)
-                    let word = str.trimmingCharacters(in: .whitespaces)
+                    let word = $0.trimmingCharacters(in: .whitespaces)
                     
                     self.records = Array(try! Realm()
                         .objects(SearchRecord.self)
                         .filter(NSPredicate(format: "title CONTAINS %@", word))
-                        //.filter("title CONTAINS[cd] %@", str)
                         .sorted(byKeyPath: "date", ascending: false))
                 }
-                
                 self.searchRecordTableView.reloadData()
-            }).disposed(by: disposeBag)
+            })
+            .store(in: &subscriptions)
+        
+        searchBar.searchButtonClickedPublisher
+            .sink(receiveValue: {
+                //print(self.searchBar.text ?? "")
+                if let update = try! Realm().objects(SearchRecord.self)
+                    .filter(NSPredicate(format: "title = %@", self.searchBar.text ?? ""))
+                    .first{ try! Realm().write{
+                        update.date = Date()
+                    }
+                }else{
+                    try! Realm().write({
+                        try! Realm().add(SearchRecord(title: self.searchBar.text))
+                    })
+                }
+                
+                self.dismiss(animated: false)
+                self.searchWordDelegate?.sendQuery(query: self.searchBar.text!)
+            })
+            .store(in: &subscriptions)
     }
     
     private func fetchRecords() {
@@ -127,25 +163,25 @@ final class SearchViewController: UIViewController {
     }
 }
 
-extension SearchViewController: UISearchBarDelegate {
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar)
-    {
-        if let update = try! Realm().objects(SearchRecord.self)
-            .filter(NSPredicate(format: "title = %@", self.searchBar.text ?? ""))
-            .first{ try! Realm().write{
-                update.date = Date()
-            }
-        }else{
-            try! Realm().write({
-                try! Realm().add(SearchRecord(title: self.searchBar.text))
-            })
-        }
-        
-        self.dismiss(animated: false)
-        searchWordDelegate?.sendQuery(query: self.searchBar.text!)
-    }
-}
+//extension SearchViewController: UISearchBarDelegate {
+//    
+//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar)
+//    {
+//        if let update = try! Realm().objects(SearchRecord.self)
+//            .filter(NSPredicate(format: "title = %@", self.searchBar.text ?? ""))
+//            .first{ try! Realm().write{
+//                update.date = Date()
+//            }
+//        }else{
+//            try! Realm().write({
+//                try! Realm().add(SearchRecord(title: self.searchBar.text))
+//            })
+//        }
+//        
+//        self.dismiss(animated: false)
+//        searchWordDelegate?.sendQuery(query: self.searchBar.text!)
+//    }
+//}
 
 extension SearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView,

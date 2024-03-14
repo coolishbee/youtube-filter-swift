@@ -77,7 +77,7 @@ extension MyPageViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! MyPageCell
-        
+                
         if indexPath.section == 0 {
             cell.menuLabel.text = blockMenu[indexPath.row]
         } else if indexPath.section == 1 {

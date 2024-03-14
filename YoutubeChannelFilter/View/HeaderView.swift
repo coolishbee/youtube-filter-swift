@@ -22,14 +22,14 @@ class HeaderView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        configureUI()
+        setupView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureUI() {
+    func setupView() {
         addSubview(profileImage)
         profileImage.translatesAutoresizingMaskIntoConstraints = false
         

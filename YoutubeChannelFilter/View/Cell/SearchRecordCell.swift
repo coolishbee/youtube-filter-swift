@@ -11,7 +11,7 @@ import SnapKit
 class SearchRecordCell: UITableViewCell {
     static let reuseIdentifier = "searchRecordTableViewCell"
     
-    var indexPath: IndexPath?
+    public var indexPath: IndexPath?
     private(set) var titleLabel = UILabel()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

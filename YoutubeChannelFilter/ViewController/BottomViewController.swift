@@ -14,7 +14,7 @@ class BottomViewController: UIViewController {
         static var rowHeight: CGFloat { return 54.0 }
     }
     
-    private var tableViewHeightConstrants: NSLayoutConstraint?
+    private var tableViewHeightConstrants = NSLayoutConstraint()
     private var tableData = [BottomCellData]()
     
     lazy var dimView: UIView = {
@@ -80,7 +80,7 @@ class BottomViewController: UIViewController {
     }
     
     @objc func dimGesture() {
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true)
     }
     
     func addAction(_ data: BottomCellData) {
@@ -119,7 +119,7 @@ class BottomViewController: UIViewController {
         }
                 
         tableViewHeightConstrants = tableView.heightAnchor.constraint(equalToConstant: CGFloat(Int(Design.rowHeight) * self.tableData.count))
-        tableViewHeightConstrants?.isActive = true
+        tableViewHeightConstrants.isActive = true
     }
 }
 
