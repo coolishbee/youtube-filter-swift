@@ -44,7 +44,7 @@ class HomeViewController: UIViewController {
         
         setupView()
         
-        API.getYoutubeList(searchWord: "황주호 김지현") { result, error in
+        API.getYoutubeList(searchWord: "손흥민 아스날전 골") { result, error in
             guard let result = result else {
                 print("Error! \(String(describing: error))")
                 return

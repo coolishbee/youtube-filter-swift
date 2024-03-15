@@ -110,20 +110,47 @@ extension ResultListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = Bundle.main.loadNibNamed("VideoTableCell", owner: self, options: nil)?.first as! VideoTableCell
-        cell.title.text = self.videoArray[indexPath.row].title
-        cell.title.sizeToFit()
-        cell.channel.text = self.videoArray[indexPath.row].channel
-        cell.date.text = self.videoArray[indexPath.row].date
-        let img = self.videoArray[indexPath.row].videoImg
-        cell.videoImg.sd_setImage(with: URL(string: img), placeholderImage: #imageLiteral(resourceName: "placeholder"))
         
-        return cell
+        switch self.videoArray[indexPath.row].kind {
+        case .Video:
+            let cell = Bundle.main.loadNibNamed("VideoTableCell", owner: self, options: nil)?.first as! VideoTableCell
+            cell.title.text = self.videoArray[indexPath.row].title
+            cell.title.sizeToFit()
+            cell.channel.text = self.videoArray[indexPath.row].channel
+            cell.date.text = self.videoArray[indexPath.row].date
+            let img = self.videoArray[indexPath.row].videoImg
+            cell.videoImg.sd_setImage(with: URL(string: img), placeholderImage: #imageLiteral(resourceName: "placeholder"))
+            
+            return cell
+        case .Channel:
+            let cell = Bundle.main.loadNibNamed("ChannelTableCell", owner: self, options: nil)?.first as! ChannelTableCell
+            cell.channelTitle.text = self.videoArray[indexPath.row].channel
+            let img = self.videoArray[indexPath.row].videoImg
+            cell.channelImg.layer.cornerRadius = cell.channelImg.frame.height/2
+            cell.channelImg.sd_setImage(with: URL(string: img), placeholderImage: #imageLiteral(resourceName: "placeholder"))
+            
+            return cell
+        case .PlayList:
+            let cell = Bundle.main.loadNibNamed("PlayListTableCell", owner: self, options: nil)?.first as! PlayListTableCell
+            cell.title.text = self.videoArray[indexPath.row].title
+            cell.title.sizeToFit()
+            cell.channel.text = self.videoArray[indexPath.row].channel
+            cell.date.text = self.videoArray[indexPath.row].date
+            let img = self.videoArray[indexPath.row].videoImg
+            cell.videoImg.sd_setImage(with: URL(string: img), placeholderImage: #imageLiteral(resourceName: "placeholder"))
+            
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 310
+        let type = indexPath.row
+        if(self.videoArray[type].kind == .Channel) {
+            return 155
+        }else {
+            return 310
+        }
     }
 }
 

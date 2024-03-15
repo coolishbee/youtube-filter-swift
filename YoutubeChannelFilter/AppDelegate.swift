@@ -15,12 +15,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        let config = APIConfiguration(apiKey: "AIzaSyAQyLxX7ZxjnURAvRY-HgYsrIcrFuHqWKE")
+        let config = APIConfiguration(apiKey: "")
         APIConfiguration._shared = config
                 
                 
         self.window = UIWindow(frame: UIScreen.main.bounds)
-        self.window?.rootViewController = MainTabBarVC()        
+        self.window?.rootViewController = MainTabBarVC()
         self.window?.makeKeyAndVisible()
         
         return true
