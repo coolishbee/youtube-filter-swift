@@ -59,10 +59,20 @@ class MainTabBarVC: UITabBarController {
         }
     }
     
-    lazy var libraryController = handleCreateTab(with: MyPageViewController(),
-                                                 title: "You",
-                                                 selectedImg: UIImage(named: "me_1"),
-                                                 image: UIImage(named: "me"))
+    lazy var myPageController = handleCreateTab(with: MyPageViewController(),
+                                                title: "You",
+                                                selectedImg: UIImage(named: "me_1"),
+                                                image: UIImage(named: "me"))
+    
+    lazy var shortsController = handleCreateTab(with: UIViewController(),
+                                                title: "Shorts",
+                                                selectedImg: UIImage(systemName: "flame.fill"),
+                                                image: UIImage(systemName: "flame"))
+    
+    lazy var subsController = handleCreateTab(with: SubsViewController(),
+                                              title: "Subscribe",
+                                              selectedImg: UIImage(systemName: "play.square.stack.fill"),
+                                              image: UIImage(systemName: "play.square.stack"))
     
     private var videoPlayerContainerViewTopAnchor = NSLayoutConstraint()
     
@@ -106,7 +116,8 @@ class MainTabBarVC: UITabBarController {
                                      image: UIImage(named: "home"))
         
         //setViewControllers([homeNC, libraryController], animated: true)
-        viewControllers = [homeNC, libraryController]
+        //viewControllers = [subsController, homeNC, shortsController, myPageController]
+        viewControllers = [homeNC, subsController, shortsController, myPageController]
     }
     
     private func setupTabBarAppearance() {
@@ -352,6 +363,20 @@ class MainTabBarVC: UITabBarController {
                     return
                 }
                 self.videoPlayerView.playYoutube(for: url)
+                
+                if let update = RealmManager.shared.load(VideoDataRecord.self,
+                                                         key: "identifier",
+                                                         value: videoId)
+                    .first{ RealmManager.shared.write {
+                        update.date = Date()
+                    }
+                }else{
+                    RealmManager.shared.add(VideoDataRecord(title: data.title,
+                                                            channel: data.channel,
+                                                            url: data.videoImg,
+                                                            id: videoId,
+                                                            type: VideoSaveType.RecentRecord.rawValue))
+                }
             } catch {
                 print("streaming failed")
             }

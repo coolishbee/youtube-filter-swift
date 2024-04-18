@@ -21,7 +21,9 @@
 
 ## Demo
 
-<img src="./img/demo.gif">
+<img src="./img/demo1.gif"> <img src="./img/demo2.gif"> <img src="./img/dark-demo.gif">
+
+
 
 ## Architecture
 

@@ -9,9 +9,10 @@ import UIKit
 import Alamofire
 import SDWebImage
 import SnapKit
+import RealmSwift
 
 class HomeViewController: UIViewController {
-    private var videoArray = [VideoData]()    
+    private var videoArray = [VideoData]()
     
     lazy var videoTableView: UITableView = {
         let tableView = UITableView()
@@ -39,12 +40,19 @@ class HomeViewController: UIViewController {
         return button
     }()
     
+    lazy var chromeCastButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "broadcast"), for: .normal)
+        button.contentMode = .scaleAspectFill
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupView()
         
-        API.getYoutubeList(searchWord: "손흥민 아스날전 골") { result, error in
+        API.getYoutubeList(searchWord: "플러터") { result, error in
             guard let result = result else {
                 print("Error! \(String(describing: error))")
                 return
@@ -75,6 +83,13 @@ class HomeViewController: UIViewController {
             btn.trailing.equalTo(view.safeAreaLayoutGuide)
             btn.width.height.equalTo(50)
         }
+        
+        view.addSubview(chromeCastButton)
+        chromeCastButton.snp.makeConstraints { btn in
+            btn.top.equalTo(view.safeAreaLayoutGuide)
+            btn.trailing.equalTo(searchButton.snp.leading)
+            btn.width.height.equalTo(50)
+        }
                 
         view.addSubview(videoTableView)
         videoTableView.snp.makeConstraints { tableView in
@@ -94,25 +109,71 @@ class HomeViewController: UIViewController {
         if sender.state == .began {
             let touchPoint = sender.location(in: videoTableView)
             if let indexPath = videoTableView.indexPathForRow(at: touchPoint) {
-                //action
-                let index = indexPath.row
-                print("User Selected: ", String(index))
-                //print(self.videoArray[index].identifier ?? "id is empty")
+                let index = indexPath.row                
                 let bottomVC = BottomViewController(title: "설정")
                 bottomVC.addAction(BottomCellData(cellData: BottomCellData.channelBlock, handler: {
-                    print("channelBlock")
+                    
+                    if let update = RealmManager.shared.load(VideoDataRecord.self,
+                                                             key: "identifier",
+                                                             value: self.videoArray[index].identifier ?? "")
+                        .first{ RealmManager.shared.write {
+                            update.date = Date()
+                        }
+                    }else{
+                        RealmManager.shared.add(VideoDataRecord(title: self.videoArray[index].title,
+                                                                channel: self.videoArray[index].channel,
+                                                                url: self.videoArray[index].videoImg,
+                                                                id: self.videoArray[index].identifier ?? "",
+                                                                type: VideoSaveType.ChannelBlock.rawValue))
+                    }
+                    
                 }))
                 bottomVC.addAction(BottomCellData(cellData: BottomCellData.saveChannel, handler: {
-                    print("saveChannel")
+                    if let update = RealmManager.shared.load(VideoDataRecord.self,
+                                                             key: "identifier",
+                                                             value: self.videoArray[index].identifier ?? "")
+                        .first{ RealmManager.shared.write {
+                            update.date = Date()
+                        }
+                    }else{
+                        RealmManager.shared.add(VideoDataRecord(title: self.videoArray[index].title,
+                                                                channel: self.videoArray[index].channel,
+                                                                url: self.videoArray[index].videoImg,
+                                                                id: self.videoArray[index].identifier ?? "",
+                                                                type: VideoSaveType.SaveChannel.rawValue))
+                    }
                 }))
                 bottomVC.addAction(BottomCellData(cellData: BottomCellData.videoBlock, handler: {
-                    print("videoBlock")
+                    if let update = RealmManager.shared.load(VideoDataRecord.self,
+                                                             key: "identifier",
+                                                             value: self.videoArray[index].identifier ?? "")
+                        .first{ RealmManager.shared.write {
+                            update.date = Date()
+                        }
+                    }else{
+                        RealmManager.shared.add(VideoDataRecord(title: self.videoArray[index].title,
+                                                                channel: self.videoArray[index].channel,
+                                                                url: self.videoArray[index].videoImg,
+                                                                id: self.videoArray[index].identifier ?? "",
+                                                                type: VideoSaveType.VideoBlock.rawValue))
+                    }
                 }))
                 bottomVC.addAction(BottomCellData(cellData: BottomCellData.saveVideo, handler: {
-                    print("saveVideo")
+                    if let update = RealmManager.shared.load(VideoDataRecord.self,
+                                                             key: "identifier",
+                                                             value: self.videoArray[index].identifier ?? "")
+                        .first{ RealmManager.shared.write {
+                            update.date = Date()
+                        }
+                    }else{
+                        RealmManager.shared.add(VideoDataRecord(title: self.videoArray[index].title,
+                                                                channel: self.videoArray[index].channel,
+                                                                url: self.videoArray[index].videoImg,
+                                                                id: self.videoArray[index].identifier ?? "",
+                                                                type: VideoSaveType.SaveVideo.rawValue))
+                    }
                 }))
                 present(bottomVC, animated: true, completion: nil)
-                //end
             }
         }
     }
@@ -130,31 +191,40 @@ extension HomeViewController: UITableViewDataSource {
         
         switch self.videoArray[indexPath.row].kind {
         case .Video:
-            let cell = Bundle.main.loadNibNamed("VideoTableCell", owner: self, options: nil)?.first as! VideoTableCell
+            let cell = Bundle.main.loadNibNamed("VideoTableCell", 
+                                                owner: self,
+                                                options: nil)?.first as! VideoTableCell
             cell.title.text = self.videoArray[indexPath.row].title
             cell.title.sizeToFit()
             cell.channel.text = self.videoArray[indexPath.row].channel
             cell.date.text = self.videoArray[indexPath.row].date
             let img = self.videoArray[indexPath.row].videoImg
-            cell.videoImg.sd_setImage(with: URL(string: img), placeholderImage: #imageLiteral(resourceName: "placeholder"))
+            cell.videoImg.sd_setImage(with: URL(string: img), 
+                                      placeholderImage: #imageLiteral(resourceName: "placeholder"))
             
             return cell
         case .Channel:
-            let cell = Bundle.main.loadNibNamed("ChannelTableCell", owner: self, options: nil)?.first as! ChannelTableCell
+            let cell = Bundle.main.loadNibNamed("ChannelTableCell", 
+                                                owner: self,
+                                                options: nil)?.first as! ChannelTableCell
             cell.channelTitle.text = self.videoArray[indexPath.row].channel
             let img = self.videoArray[indexPath.row].videoImg
             cell.channelImg.layer.cornerRadius = cell.channelImg.frame.height/2
-            cell.channelImg.sd_setImage(with: URL(string: img), placeholderImage: #imageLiteral(resourceName: "placeholder"))
+            cell.channelImg.sd_setImage(with: URL(string: img), 
+                                        placeholderImage: #imageLiteral(resourceName: "placeholder"))
             
             return cell
         case .PlayList:
-            let cell = Bundle.main.loadNibNamed("PlayListTableCell", owner: self, options: nil)?.first as! PlayListTableCell
+            let cell = Bundle.main.loadNibNamed("PlayListTableCell", 
+                                                owner: self,
+                                                options: nil)?.first as! PlayListTableCell
             cell.title.text = self.videoArray[indexPath.row].title
             cell.title.sizeToFit()
             cell.channel.text = self.videoArray[indexPath.row].channel
             cell.date.text = self.videoArray[indexPath.row].date
             let img = self.videoArray[indexPath.row].videoImg
-            cell.videoImg.sd_setImage(with: URL(string: img), placeholderImage: #imageLiteral(resourceName: "placeholder"))
+            cell.videoImg.sd_setImage(with: URL(string: img), 
+                                      placeholderImage: #imageLiteral(resourceName: "placeholder"))
             
             return cell
         }

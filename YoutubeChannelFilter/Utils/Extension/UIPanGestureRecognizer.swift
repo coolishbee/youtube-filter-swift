@@ -21,7 +21,7 @@ extension UIPanGestureRecognizer {
         static let right = PanGestureDirection(rawValue: 1 << 3)
     }
     
-    public func direction(in view: UIView) -> PanGestureDirection {
+    func direction(in view: UIView) -> PanGestureDirection {
         let vel = self.velocity(in: view)
         let isVerticalGesture = abs(vel.y) > abs(vel.x)
         if isVerticalGesture {

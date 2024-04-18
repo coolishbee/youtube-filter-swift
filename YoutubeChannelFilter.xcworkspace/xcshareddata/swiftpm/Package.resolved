@@ -1,4 +1,5 @@
 {
+  "originHash" : "97800c6140b884a34378fa0c1881fff8078b5c15cb7ed855722e9e2c2a9b3125",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -16,6 +17,15 @@
       "state" : {
         "revision" : "7300c75ff9e072aa7fd0fccefcc88f74aae9bf56",
         "version" : "0.4.1"
+      }
+    },
+    {
+      "identity" : "materialactivityindicator",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nspavlo/MaterialActivityIndicator",
+      "state" : {
+        "revision" : "9ed85a25d1870c57f3c3934425ebcdc5aea68736",
+        "version" : "0.0.7"
       }
     },
     {
@@ -64,5 +74,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

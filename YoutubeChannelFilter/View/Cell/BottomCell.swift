@@ -12,7 +12,6 @@ class BottomCell: UITableViewCell {
         
     enum Design {
         static var spacing: CGFloat { return 34.0 }
-        static var font: UIFont { return .r14 }
         static var margin: CGFloat { return 16.0 }
     }
     
@@ -68,14 +67,14 @@ class BottomCell: UITableViewCell {
         
         self.backgroundColor = Color.background
         iconImage.tintColor = Color.black
-        titleLabel.font = Design.font
+        titleLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         titleLabel.textColor = Color.black
     }
     
     func configure(data: CellData) {
         self.iconImage.image = data.image.withRenderingMode(.alwaysTemplate)
         self.titleLabel.text = data.title
-        self.titleLabel.font = Design.font
+        self.titleLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         self.titleLabel.textColor = Color.black
     }
 }

@@ -30,6 +30,9 @@ class ResultListViewController: UIViewController {
         let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
+        let longPress = UILongPressGestureRecognizer(target: self,
+                                                     action: #selector(handleLongPress))
+        tableView.addGestureRecognizer(longPress)
         return tableView
     }()
     
@@ -46,6 +49,10 @@ class ResultListViewController: UIViewController {
             self.videoArray = result
             self.resultTableView.reloadData()
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.isHidden = true
     }
     
     init(word: String) {
@@ -98,6 +105,79 @@ class ResultListViewController: UIViewController {
         vc.searchWordDelegate = self
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: false)
+    }
+    
+    @objc private func handleLongPress(sender: UILongPressGestureRecognizer) {
+        if sender.state == .began {
+            let touchPoint = sender.location(in: resultTableView)
+            if let indexPath = resultTableView.indexPathForRow(at: touchPoint) {
+                let index = indexPath.row
+                let bottomVC = BottomViewController(title: "설정")
+                bottomVC.addAction(BottomCellData(cellData: BottomCellData.channelBlock, handler: {
+                    
+                    if let update = RealmManager.shared.load(VideoDataRecord.self,
+                                                             key: "identifier",
+                                                             value: self.videoArray[index].identifier ?? "")
+                        .first{ RealmManager.shared.write {
+                            update.date = Date()
+                        }
+                    }else{
+                        RealmManager.shared.add(VideoDataRecord(title: self.videoArray[index].title,
+                                                                channel: self.videoArray[index].channel,
+                                                                url: self.videoArray[index].videoImg,
+                                                                id: self.videoArray[index].identifier ?? "",
+                                                                type: VideoSaveType.ChannelBlock.rawValue))
+                    }
+                    
+                }))
+                bottomVC.addAction(BottomCellData(cellData: BottomCellData.saveChannel, handler: {
+                    if let update = RealmManager.shared.load(VideoDataRecord.self,
+                                                             key: "identifier",
+                                                             value: self.videoArray[index].identifier ?? "")
+                        .first{ RealmManager.shared.write {
+                            update.date = Date()
+                        }
+                    }else{
+                        RealmManager.shared.add(VideoDataRecord(title: self.videoArray[index].title,
+                                                                channel: self.videoArray[index].channel,
+                                                                url: self.videoArray[index].videoImg,
+                                                                id: self.videoArray[index].identifier ?? "",
+                                                                type: VideoSaveType.SaveChannel.rawValue))
+                    }
+                }))
+                bottomVC.addAction(BottomCellData(cellData: BottomCellData.videoBlock, handler: {
+                    if let update = RealmManager.shared.load(VideoDataRecord.self,
+                                                             key: "identifier",
+                                                             value: self.videoArray[index].identifier ?? "")
+                        .first{ RealmManager.shared.write {
+                            update.date = Date()
+                        }
+                    }else{
+                        RealmManager.shared.add(VideoDataRecord(title: self.videoArray[index].title,
+                                                                channel: self.videoArray[index].channel,
+                                                                url: self.videoArray[index].videoImg,
+                                                                id: self.videoArray[index].identifier ?? "",
+                                                                type: VideoSaveType.VideoBlock.rawValue))
+                    }
+                }))
+                bottomVC.addAction(BottomCellData(cellData: BottomCellData.saveVideo, handler: {
+                    if let update = RealmManager.shared.load(VideoDataRecord.self,
+                                                             key: "identifier",
+                                                             value: self.videoArray[index].identifier ?? "")
+                        .first{ RealmManager.shared.write {
+                            update.date = Date()
+                        }
+                    }else{
+                        RealmManager.shared.add(VideoDataRecord(title: self.videoArray[index].title,
+                                                                channel: self.videoArray[index].channel,
+                                                                url: self.videoArray[index].videoImg,
+                                                                id: self.videoArray[index].identifier ?? "",
+                                                                type: VideoSaveType.SaveVideo.rawValue))
+                    }
+                }))
+                present(bottomVC, animated: true, completion: nil)
+            }
+        }
     }
     
 }
@@ -161,15 +241,6 @@ extension ResultListViewController: UITableViewDelegate {
         print(self.videoArray[index].identifier ?? "id is empty")
         
         NotificationCenter.default.post(name: .openVideoPlayer, object: self.videoArray[index])
-        
-//        switch(indexPath.row){
-//        case 0:
-//            print("case 0")
-//        case 1:
-//            print("case 1")
-//        default:
-//            print("default")
-//        }
     }
 }
 

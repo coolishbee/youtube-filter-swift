@@ -8,7 +8,8 @@
 import UIKit
 import SnapKit
 import AVFoundation
-import MaterialComponents.MaterialActivityIndicator
+//import MaterialComponents.MaterialActivityIndicator
+import MaterialActivityIndicator
 
 protocol VideoPlayerViewDelegate: AnyObject {
     func handleMinimizeVideoPlayer()
@@ -43,7 +44,7 @@ class VideoPlayerView: UIView {
     private lazy var playbackSlider: CustomSlider = {
         let slider = CustomSlider()
         slider.awakeFromNib()
-        slider.alpha = 0
+        slider.alpha = 0        
         slider.minimumTrackTintColor = .red
         slider.maximumTrackTintColor = UIColor(white: 0.5, alpha: 0.5)
 //        slider.thumbTintColor = .red
@@ -115,7 +116,8 @@ class VideoPlayerView: UIView {
         return label
     }()
     
-    private(set) lazy var activityIndicator = MDCActivityIndicator()
+    //private(set) lazy var activityIndicator = MDCActivityIndicator()
+    private(set) lazy var activityIndicator = MaterialActivityIndicatorView()
         
     private var timeObserverToken: Any?
     
@@ -192,8 +194,7 @@ class VideoPlayerView: UIView {
         }
         
         activityIndicator.sizeToFit()
-        insertSubview(activityIndicator, belowSubview: playPauseButton)
-        
+        insertSubview(activityIndicator, belowSubview: playPauseButton)        
         activityIndicator.snp.makeConstraints { (make) in
             make.center.equalToSuperview()
         }
@@ -372,7 +373,7 @@ class VideoPlayerView: UIView {
         playPauseButton.setImage(image, for: .normal)
         elapsedTimeLabel.text = ""
         
-        [playPauseButton, skipBackwardButton, skipForwardButton,
+        [playPauseButton, skipBackwardButton, skipForwardButton, playbackSlider,
          elapsedTimeLabel, fullScreenModeBtn, minimizeVideoPlayerBtn].forEach { view in
             view.alpha = 0
         }

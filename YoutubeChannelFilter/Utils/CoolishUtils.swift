@@ -17,6 +17,17 @@ class CoolishUtils {
 //        alert.addAction(action)
 //        vc.present(alert, animated: true)
 //    }
+    
+    static func systemModeColor() -> UIColor {
+        let dynamicColor = UIColor(dynamicProvider: { (traitCollection) -> UIColor in
+            if traitCollection.userInterfaceStyle == .dark {
+                return UIColor.red
+            }else {
+                return UIColor.green
+            }
+        })
+        return dynamicColor
+    }
 }
 
 func guardSharedProperty<T>(_ input: T?) -> T {

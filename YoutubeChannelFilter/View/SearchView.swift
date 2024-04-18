@@ -28,7 +28,7 @@ class SearchView: UIButton {
             string: "YouTube 검색",
             attributes:
                 [NSAttributedString.Key.foregroundColor: Color.black,
-                 NSAttributedString.Key.font: UIFont.r16])
+                 NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .regular)])
         return text
     }()
     

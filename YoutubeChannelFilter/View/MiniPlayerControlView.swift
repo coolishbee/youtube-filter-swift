@@ -90,6 +90,7 @@ class MiniPlayerControlView: UIView {
             make.top.equalTo(10)
             make.left.equalTo(8)
             make.trailing.equalTo(playPauseButton.snp.leading)
+            make.width.equalTo(150)
             
 //            make.top.equalTo(baseView.snp.top).offset(10)
 //            make.leading.equalTo(baseView).offset(8)
@@ -100,20 +101,19 @@ class MiniPlayerControlView: UIView {
             make.top.equalTo(videoTitleLabel.snp.bottom).offset(8)
             make.leading.equalTo(videoTitleLabel.snp.leading)
             make.trailing.equalTo(videoTitleLabel.snp.trailing)
+            make.width.equalTo(150)
         }
         
         playPauseButton.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
             make.trailing.equalTo(cancelButton.snp.leading)
             make.width.equalTo(50)
-            //make.height.equalTo(MINI_PLAYER_HEIGHT)
         }
         
         cancelButton.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()
-            make.trailing.equalTo(self).offset(-5).priority(.high)
+            make.leading.equalTo(playPauseButton.snp.trailing)
             make.width.equalTo(50)
-            //make.height.equalTo(MINI_PLAYER_HEIGHT)
         }
         
     }

@@ -15,7 +15,7 @@ struct Constants {
         static let baseURL = ""
     }
     
-    static let javascriptYoutubeUrlEvaluator = "document.getElementsByTagName('video')[0].src"
+    static let jsUrlEvaluator = "document.getElementsByTagName('video')[0].src"
 }
 
 enum HTTPHeaderField: String {

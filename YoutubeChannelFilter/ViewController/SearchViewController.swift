@@ -21,7 +21,7 @@ final class SearchViewController: UIViewController {
     private var records = [SearchRecord]()
     //private var disposeBag = DisposeBag()
     private var subscriptions = Set<AnyCancellable>()
-    weak var searchWordDelegate: SearchWordDelegate?
+    weak var searchWordDelegate: SearchWordDelegate?    
     
     lazy var backBtnImageView: UIImageView = {
         let view = UIImageView()
@@ -125,8 +125,7 @@ final class SearchViewController: UIViewController {
                 }else{
                     let word = $0.trimmingCharacters(in: .whitespaces)
                     
-                    self.records = Array(try! Realm()
-                        .objects(SearchRecord.self)
+                    self.records = Array(RealmManager.shared.load(SearchRecord.self)
                         .filter(NSPredicate(format: "title CONTAINS %@", word))
                         .sorted(byKeyPath: "date", ascending: false))
                 }
@@ -137,15 +136,15 @@ final class SearchViewController: UIViewController {
         searchBar.searchButtonClickedPublisher
             .sink(receiveValue: {
                 //print(self.searchBar.text ?? "")
-                if let update = try! Realm().objects(SearchRecord.self)
-                    .filter(NSPredicate(format: "title = %@", self.searchBar.text ?? ""))
-                    .first{ try! Realm().write{
+                
+                if let update = RealmManager.shared.load(SearchRecord.self,
+                                                         key: "title",
+                                                         value: self.searchBar.text ?? "")
+                    .first{ RealmManager.shared.write {
                         update.date = Date()
                     }
                 }else{
-                    try! Realm().write({
-                        try! Realm().add(SearchRecord(title: self.searchBar.text))
-                    })
+                    RealmManager.shared.add(SearchRecord(title: self.searchBar.text))
                 }
                 
                 self.dismiss(animated: false)
@@ -155,7 +154,9 @@ final class SearchViewController: UIViewController {
     }
     
     private func fetchRecords() {
-        records = Array(try! Realm().objects(SearchRecord.self).sorted(byKeyPath: "date", ascending: false))
+        records = Array(RealmManager.shared.load(SearchRecord.self,
+                                                 sortKey: "date",
+                                                 ascending: false))
     }
     
     @objc private func popView(_ sender: UITapGestureRecognizer) {
@@ -208,9 +209,8 @@ extension SearchViewController: UITableViewDataSource {
                    forRowAt indexPath: IndexPath)
     {
         if editingStyle == .delete {
-            try! Realm().write {
-                try! Realm().delete(records[indexPath.row])
-            }
+            RealmManager.shared.delete(records[indexPath.row])
+
             records.remove(at: indexPath.row)
             searchRecordTableView.reloadData()
         }
@@ -223,7 +223,8 @@ extension SearchViewController: UITableViewDelegate {
     {
         let searchText = records[indexPath.row].title ?? "empty"
         let record = records[indexPath.row]
-        try! Realm().write{
+
+        RealmManager.shared.write {
             record.date = Date()
         }
         
