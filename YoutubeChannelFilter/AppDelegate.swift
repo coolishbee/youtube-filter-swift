@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        let config = APIConfiguration(apiKey: "AIzaSyCnR0O_UIaepOwVyYnQF78XTTX5E2qz0yQ")
+        let config = APIConfiguration(apiKey: "")
         APIConfiguration._shared = config
                 
                 
