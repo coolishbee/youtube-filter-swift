@@ -34,7 +34,7 @@ class HomeViewController: UIViewController {
     lazy var searchButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
-        //button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = Color.black
         button.contentMode = .scaleAspectFill
         button.addTarget(self, action: #selector(searchViewBtn(_:)), for: .touchUpInside)
         return button
@@ -68,8 +68,8 @@ class HomeViewController: UIViewController {
     }
     
     private func setupView() {
-        view.backgroundColor = .systemBackground
-                
+        view.backgroundColor = .systemBackground        
+
         view.addSubview(logImageView)
         logImageView.snp.makeConstraints { imageView in
             imageView.top.equalTo(view.safeAreaLayoutGuide).inset(20)

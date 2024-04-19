@@ -42,7 +42,7 @@ final class SearchViewController: UIViewController {
     }()
     
     lazy var searchRecordTableView: UITableView = {
-        let tableView = UITableView()
+        let tableView = UITableView(frame: CGRect.zero, style: .grouped)
         tableView.register(SearchRecordCell.self,
                            forCellReuseIdentifier: SearchRecordCell.reuseIdentifier)
         tableView.register(UITableViewHeaderFooterView.self,
@@ -50,6 +50,7 @@ final class SearchViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.keyboardDismissMode = .onDrag
+        tableView.backgroundColor = .systemBackground
         return tableView
     }()
     
