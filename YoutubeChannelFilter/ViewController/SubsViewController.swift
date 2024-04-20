@@ -9,9 +9,11 @@ import UIKit
 import RealmSwift
 
 class SubsViewController: UICollectionViewController {
+        
+    private let category = ["최근 시청기록", "차단된 채널목록", "저장된 채널목록", "차단된 동영상목록", "저장된 동영상목록"]
     
-    private var videoRecords = [VideoDataRecord]()
-    private let sections = ["최근 시청기록", "차단된 채널목록", "저장된 채널목록", "차단된 동영상목록", "저장된 동영상목록"]
+    var notificationToken: NotificationToken?
+    var results : Results<VideoDataRecord>?
     
     init() {
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
@@ -25,10 +27,31 @@ class SubsViewController: UICollectionViewController {
         super.viewDidLoad()
         
         setupView()
-        videoRecords = Array(RealmManager.shared.load(VideoDataRecord.self,
-                                                      sortKey: "date",
-                                                      ascending: false))
-        self.collectionView.reloadData()
+        
+        results = RealmManager.shared.load(VideoDataRecord.self,
+                                           sortKey: "date",
+                                           ascending: false)
+        
+        notificationToken = results?.observe { [weak self] (changes: RealmCollectionChange) in
+            guard let tableView = self?.collectionView else { return }
+            switch changes {
+            case .initial(let users):
+                tableView.reloadData()
+            case .update(let users, let deletions, let insertions, let modifications):
+                tableView.reloadData()
+                
+                // FIXME: from reloadData to performBatchUpdates
+//                tableView.performBatchUpdates({
+//                    tableView.deleteItems(at: deletions.map({ IndexPath(item: $0, section: 0)} ))
+//                    tableView.insertItems(at: insertions.map({ IndexPath(item: $0, section: 0)} ))
+//                    tableView.reloadItems(at: modifications.map({ IndexPath(item: $0, section: 0)} ))
+//                }, completion: { finished in
+//                    print(finished.description)
+//                })
+            case .error(let error):
+                fatalError("\(error)")
+            }
+        }
     }
     
     private func setupView() {
@@ -47,18 +70,17 @@ extension SubsViewController: UICollectionViewDelegateFlowLayout {
     
     override func collectionView(_ collectionView: UICollectionView, 
                                  numberOfItemsInSection section: Int) -> Int {
-        return sections.count
+        return category.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, 
                                  didSelectItemAt indexPath: IndexPath) {
-        
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return .init(width: view.frame.width, height: 320)
+        return .init(width: view.frame.width, height: 270)
     }
     
     func collectionView(_ collectionView: UICollectionView, 
@@ -67,49 +89,17 @@ extension SubsViewController: UICollectionViewDelegateFlowLayout {
         return 20
     }
     
-    private func setupCells(_ section: Int, indexPath: IndexPath) -> UICollectionViewCell {
-        
+    private func setupCells(_ type: Int, indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.cellReuseIdentifier,
                                                       for: indexPath) as! CollectionViewCell
+        let filteredRecords = results?.where {
+            $0.saveType == type
+        }
         
-        switch section {
-        case VideoSaveType.RecentRecord.rawValue:
-            let filteredRecords = Array(RealmManager.shared.load(VideoDataRecord.self)
-                .filter(NSPredicate(format: "saveType == %d", VideoSaveType.RecentRecord.rawValue))
-                .sorted(byKeyPath: "date", ascending: false))
-                        
-            cell.configure(records: filteredRecords, sections[VideoSaveType.RecentRecord.rawValue])
+        if let array = filteredRecords?.toArray() {
+            cell.configure(records: array, category[type])
             return cell
-        case VideoSaveType.ChannelBlock.rawValue:
-            let filteredRecords = Array(RealmManager.shared.load(VideoDataRecord.self)
-                .filter(NSPredicate(format: "saveType == %d", VideoSaveType.ChannelBlock.rawValue))
-                .sorted(byKeyPath: "date", ascending: false))
-            
-            cell.configure(records: filteredRecords, sections[VideoSaveType.ChannelBlock.rawValue])
-            return cell
-        case VideoSaveType.SaveChannel.rawValue:
-            let filteredRecords = Array(RealmManager.shared.load(VideoDataRecord.self)
-                .filter(NSPredicate(format: "saveType == %d", VideoSaveType.SaveChannel.rawValue))
-                .sorted(byKeyPath: "date", ascending: false))
-            
-            cell.configure(records: filteredRecords, sections[VideoSaveType.SaveChannel.rawValue])
-            return cell
-        case VideoSaveType.VideoBlock.rawValue:
-            let filteredRecords = Array(RealmManager.shared.load(VideoDataRecord.self)
-                .filter(NSPredicate(format: "saveType == %d", VideoSaveType.VideoBlock.rawValue))
-                .sorted(byKeyPath: "date", ascending: false))
-            
-            cell.configure(records: filteredRecords, sections[VideoSaveType.VideoBlock.rawValue])
-            return cell
-        case VideoSaveType.SaveVideo.rawValue:
-            let filteredRecords = Array(RealmManager.shared.load(VideoDataRecord.self)
-                .filter(NSPredicate(format: "saveType == %d", VideoSaveType.SaveVideo.rawValue))
-                .sorted(byKeyPath: "date", ascending: false))
-            
-            cell.configure(records: filteredRecords, sections[VideoSaveType.SaveVideo.rawValue])
-            return cell
-        default:
-            print("default")
+        }else{
             return cell
         }
     }

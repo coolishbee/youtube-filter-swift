@@ -68,7 +68,7 @@ class HomeViewController: UIViewController {
     }
     
     private func setupView() {
-        view.backgroundColor = .systemBackground        
+        view.backgroundColor = .systemBackground
 
         view.addSubview(logImageView)
         logImageView.snp.makeConstraints { imageView in
